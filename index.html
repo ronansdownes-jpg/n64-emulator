@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>N64 Web Emulator</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+    }
+
+    button {
+      padding: 12px 18px;
+      margin: 8px;
+      border: none;
+      border-radius: 8px;
+      background: #00c3ff;
+      cursor: pointer;
+    }
+
+    #game {
+      margin-top: 20px;
+      width: 100%;
+      height: 70vh;
+    }
+  </style>
+</head>
+<body>
+
+<h1>N64 Emulator</h1>
+
+<button onclick="document.getElementById('file').click()">Load Game</button>
+<button onclick="toggleFS()">Fullscreen</button>
+
+<input type="file" id="file" accept=".z64,.n64,.v64" hidden>
+
+<div id="game"></div>
+
+<script>
+const fileInput = document.getElementById("file");
+
+fileInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  document.getElementById("game").innerHTML =
+    "<div id='emulator' style='width:100%;height:100%'></div>";
+
+  // EmulatorJS setup
+  window.EJS_player = "#emulator";
+  window.EJS_core = "n64";
+  window.EJS_pathtodata = "https://www.emulatorjs.com/data/";
+
+  // ✅ FIX: pass File object directly (NOT blob URL)
+  window.EJS_gameUrl = file;
+
+  const script = document.createElement("script");
+  script.src = "https://www.emulatorjs.com/loader.js";
+  document.body.appendChild(script);
+});
+
+function toggleFS() {
+  const el = document.getElementById("game");
+  if (!document.fullscreenElement) {
+    el.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
+</script>
+
+</body>
+</html>
